@@ -1,0 +1,95 @@
+#include <iostream>
+#include <list>
+#include <vector>
+#include <string>
+
+class HashTable {
+private:
+    // Número de "buckets" (espacios) en la tabla hash
+    int capacity;
+    // Tabla hash representada como un vector de listas
+    std::vector<std::list<std::pair<std::string, int>>> table;
+
+    // Función hash
+    int hashFunction(const std::string& key) {
+        int hashValue = 0;
+        for (char ch : key) {
+            hashValue += ch; // Suma los valores ASCII de los caracteres
+        }
+        return hashValue % capacity; // Retorna el índice dentro del rango
+    }
+
+public:
+    // Constructor
+    HashTable(int size) : capacity(size) {
+        table.resize(capacity);
+    }
+
+    // Inserción de un nuevo par clave-valor
+    void insert(const std::string& key, int value) {
+        int index = hashFunction(key);
+        // Busca si la clave ya existe
+        for (auto& pair : table[index]) {
+            if (pair.first == key) {
+                pair.second = value; // Actualiza el valor si la clave ya existe
+                return;
+            }
+        }
+        // Si la clave no existe, agrega un nuevo par
+        table[index].emplace_back(key, value);
+    }
+
+    // Búsqueda de un valor por clave
+    int search(const std::string& key) {
+        int index = hashFunction(key);
+        for (const auto& pair : table[index]) {
+            if (pair.first == key) {
+                return pair.second; // Retorna el valor si se encuentra la clave
+            }
+        }
+        return -1; // Retorna -1 si la clave no se encuentra
+    }
+
+    // Eliminación de un par clave-valor
+    void remove(const std::string& key) {
+        int index = hashFunction(key);
+        auto& entries = table[index];
+        for (auto it = entries.begin(); it != entries.end(); ++it) {
+            if (it->first == key) {
+                entries.erase(it); // Elimina la entrada
+                return;
+            }
+        }
+    }
+
+    // Mostrar la tabla hash
+    void display() {
+        for (int i = 0; i < capacity; ++i) {
+            std::cout << "Bucket " << i << ": ";
+            for (const auto& pair : table[i]) {
+                std::cout << "(" << pair.first << ": " << pair.second << ") ";
+            }
+            std::cout << std::endl;
+        }
+    }
+};
+
+int main() {
+    HashTable ht(10); // Crear una tabla hash de tamaño 10
+
+    ht.insert("apple", 1);
+    ht.insert("banana", 2);
+    ht.insert("orange", 3);
+
+    std::cout << "Tabla hash después de inserciones:" << std::endl;
+    ht.display();
+
+    std::cout << "Buscar 'banana': " << ht.search("banana") << std::endl;
+    std::cout << "Buscar 'grape': " << ht.search("grape") << std::endl;
+
+    ht.remove("banana");
+    std::cout << "Tabla hash después de eliminar 'banana':" << std::endl;
+    ht.display();
+
+    return 0;
+}
