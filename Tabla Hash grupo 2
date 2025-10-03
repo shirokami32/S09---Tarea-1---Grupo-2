@@ -90,21 +90,59 @@ public:
 };
 
 int main() {
-    HashTable ht(10); // Crear una tabla hash de tamaño 10
+    HashTable ht(10);
 
-    ht.insert("apple", 1);
-    ht.insert("banana", 2);
-    ht.insert("orange", 3);
+    while (true) {
+        std::cout << "\nMenu:\n";
+        std::cout << "a. Agregar producto\n";
+        std::cout << "b. Buscar cantidad de producto\n";
+        std::cout << "c. Eliminar producto\n";
+        std::cout << "d. Mostrar inventario\n";
+        std::cout << "e. Salir\n";
+        std::cout << "Opción: ";
 
-    std::cout << "Tabla hash después de inserciones:" << std::endl;
-    ht.display();
+        char option;
+        std::cin >> option;
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
 
-    std::cout << "Buscar 'banana': " << ht.search("banana") << std::endl;
-    std::cout << "Buscar 'grape': " << ht.search("grape") << std::endl;
-
-    ht.remove("banana");
-    std::cout << "Tabla hash después de eliminar 'banana':" << std::endl;
-    ht.display();
+        if (option == 'a' || option == 'A') {
+            std::string key;
+            int value;
+            std::cout << "Nombre del producto: ";
+            std::getline(std::cin, key);
+            std::cout << "Cantidad: ";
+            std::cin >> value;
+            std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+            ht.insert(key, value);
+        }
+        else if (option == 'b' || option == 'B') {
+            std::string key;
+            std::cout << "Producto a buscar: ";
+            std::getline(std::cin, key);
+            int result = ht.search(key);
+            if (result >= 0)
+                std::cout << "Cantidad de '" << key << "': " << result << "\n";
+            else
+                std::cout << "Producto no encontrado.\n";
+        }
+        else if (option == 'c' || option == 'C') {
+            std::string key;
+            std::cout << "Producto a eliminar: ";
+            std::getline(std::cin, key);
+            ht.remove(key);
+        }
+        else if (option == 'd' || option == 'D') {
+            ht.display();
+        }
+        else if (option == 'e' || option == 'E') {
+            std::cout << "Saliendo...\n";
+            break;
+        }
+        else {
+            std::cout << "Opción inválida.\n";
+        }
+    }
 
     return 0;
 }
+
