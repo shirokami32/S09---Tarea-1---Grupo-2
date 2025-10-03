@@ -59,27 +59,33 @@ public:
     }
 
 
-    // Eliminación de un par clave-valor
+    // Eliminar producto
     void remove(const std::string& key) {
         int index = hashFunction(key);
         auto& entries = table[index];
         for (auto it = entries.begin(); it != entries.end(); ++it) {
             if (it->first == key) {
-                entries.erase(it); // Elimina la entrada
+                entries.erase(it);
+                std::cout << "Producto eliminado: " << key << "\n";
                 return;
             }
         }
+        std::cout << "Producto no encontrado: " << key << "\n";
     }
 
-    // Mostrar el inventario
+    // Mostrar inventario
     void display() {
     std::cout << "----Inventario----\n" << endl;
+    bool empty = true;
         for (int i = 0; i < capacity; ++i) {
             for (const auto& pair : table[i]) {
                 std::cout << "Producto: " << pair.first << " | Cantidad: " << pair.second << std::endl;
+                empty = false;
             }
             std::cout << std::endl;
         }
+        if (empty) std::cout << "(Inventario vacío)\n";
+        std::cout << "--------------------\n";
     }
 };
 
