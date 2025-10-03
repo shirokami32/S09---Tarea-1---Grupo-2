@@ -2,6 +2,8 @@
 #include <list>
 #include <vector>
 #include <string>
+#include <limits>
+
 
 class HashTable {
 private:
@@ -25,30 +27,37 @@ public:
         table.resize(capacity);
     }
 
-    // Inserción de un producto nuevo
-    void insert(const std::string& key, int cantidad) {
+    // Insertar producto (si existe, suma cantidad)
+    void insert(const std::string& key, int value) {
+        if (value <= 0) {
+            std::cout << "Cantidad inválida. Debe ser un número positivo.\n";
+            return;
+        }
         int index = hashFunction(key);
-        // Busca si la clave ya existe
         for (auto& pair : table[index]) {
             if (pair.first == key) {
-                pair.second = value; // Actualiza el valor si la clave ya existe
+                pair.second += value; // ahora suma en lugar de sobrescribir
+                std::cout << "Cantidad actualizada: " << key 
+                          << " (total: " << pair.second << ")\n";
                 return;
             }
         }
-        // Si la clave no existe, agrega un nuevo par
-        table[index].emplace_back(key, cantidad);
+        table[index].emplace_back(key, value);
+        std::cout << "Producto agregado: " << key 
+                  << " (cantidad: " << value << ")\n";
     }
 
-    // Búsqueda de un producto
+    // Buscar cantidad de producto
     int search(const std::string& key) {
         int index = hashFunction(key);
         for (const auto& pair : table[index]) {
             if (pair.first == key) {
-                return pair.second; // Retorna el valor si se encuentra la clave
+                return pair.second;
             }
         }
-        return -1; // Retorna -1 si la clave no se encuentra
+        return -1; 
     }
+
 
     // Eliminación de un par clave-valor
     void remove(const std::string& key) {
